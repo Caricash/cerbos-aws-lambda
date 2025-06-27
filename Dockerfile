@@ -25,19 +25,22 @@ RUN mkdir -p /tmp/cerbos \
   && chmod +x /tmp/cerbos/cerbos
 
 ###############################################################################
-# 2) Runtime stage: distroless with both binaries
+# 2) Runtime stage: Alpine with envsubst + your entrypoint
 ###############################################################################
-FROM gcr.io/distroless/base
+FROM alpine:3.18 AS runtime
 
-# 1) Gateway
+RUN apk add --no-cache gettext
+
+# Gateway binary
 COPY --from=builder /gw /gw
 
-# 2) Cerbos server
+# Cerbos server binary
 COPY --from=builder /tmp/cerbos/cerbos /cerbos
 
-# 3) Default config
+# Your Cerbos config template
 COPY conf.default.yml /conf.yml
 
+# The interpolation+launch script
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
