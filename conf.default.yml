@@ -24,7 +24,4 @@ storage:
 engine:
   defaultPolicyVersion: ${CERBOS_POLICY_VERSION:-v1}
 
-  policyDir: ${CERBOS_POLICY_DIR:-/tmp/cerbos-policies}
-  validation: ${CERBOS_VALIDATION:-strict}
-
 logLevel: ${CERBOS_LOG_LEVEL:-debug}
