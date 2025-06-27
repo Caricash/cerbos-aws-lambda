@@ -1,0 +1,2 @@
+[submodule "infra/cerbos"]
+	url = git@github.com:Caricash/cerbos-aws-lambda.git
