@@ -38,4 +38,7 @@ COPY --from=builder /tmp/cerbos/cerbos /cerbos
 # 3) Default config
 COPY conf.default.yml /conf.yml
 
-ENTRYPOINT ["/gw"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
