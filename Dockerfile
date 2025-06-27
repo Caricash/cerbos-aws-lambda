@@ -4,7 +4,6 @@
 ARG ALPINE_VERSION=3.18
 FROM golang:1.21-alpine${ALPINE_VERSION} AS builder
 
-# Install tools
 RUN apk add --no-cache git wget tar
 
 WORKDIR /cerbos
@@ -22,19 +21,20 @@ ARG ARCH=x86_64
 RUN mkdir -p /tmp/cerbos \
   && wget -qO- \
   "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_RELEASE}/cerbos_${CERBOS_RELEASE}_Linux_${ARCH}.tar.gz" \
-  | tar xz -C /tmp/cerbos
+  | tar xz -C /tmp/cerbos \
+  && chmod +x /tmp/cerbos/*/cerbos
 
 ###############################################################################
 # 2) Runtime stage: distroless with both binaries
 ###############################################################################
 FROM gcr.io/distroless/base
+ARG ARCH=x86_64
 
 # 1) Gateway
 COPY --from=builder /gw /gw
 
-# 2) Cerbos server: copy unpacked folder and then pull out the binary
-COPY --from=builder /tmp/cerbos /tmp/cerbos
-RUN ["/bin/sh", "-c", "cp /tmp/cerbos/*/cerbos /cerbos && chmod +x /cerbos"]
+# 2) Cerbos server: copy the binary directly (permissions preserved)
+COPY --from=builder /tmp/cerbos/*/cerbos /cerbos
 
 # 3) Default config
 COPY conf.default.yml /conf.yml
