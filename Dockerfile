@@ -16,7 +16,7 @@ ARG CERBOS_RELEASE=0.45.0
 ARG ARCH=x86_64
 RUN mkdir -p /cerbos \
   && wget -qO- \
-  "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_RELEASE}/cerbos_${CERBOS_RELEASE}_linux_${ARCH}.tar.gz" \
+  "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_RELEASE}/cerbos_${CERBOS_RELEASE}_Linux_${ARCH}.tar.gz" \
   | tar xz --strip-components=1 -C /cerbos
 
 FROM gcr.io/distroless/base
