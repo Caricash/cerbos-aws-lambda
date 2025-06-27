@@ -1,15 +1,30 @@
----
-# https://docs.cerbos.dev/cerbos/latest/configuration/auxdata.html
-# WARNING: Disabling JWT verification is not recommended because it makes the system
-# insecure by forcing Cerbos to evaluate policies using potentially tampered data.
-auxData:
-  jwt:
-    disableVerification: true
+server:
+  httpListenAddr: ${CERBOS_HTTP_ADDR:-":3592"}
+  grpcListenAddr: ${CERBOS_GRPC_ADDR:-":3593"}
+  adminAPI:
+    enabled: ${CERBOS_ADMIN_API_ENABLED:-true}
+    adminCredentials:
+      username: ${CERBOS_ADMIN_USERNAME}
+      passwordHash: ${CERBOS_ADMIN_PASSWORD_HASH}
 
 storage:
-  driver: "blob"
-  blob:
-    bucket: $BUCKET_URL
-    prefix: $BUCKET_PREFIX
-    workDir: /tmp/workDir
-    updatePollInterval: 15s
+  driver: git
+  git:
+    protocol: https
+    url: ${CERBOS_GIT_URL}
+    branch: ${CERBOS_POLICY_BRANCH:-main}
+    subDir: ${CERBOS_POLICY_SUBDIR:-modules}
+    checkoutDir: ${CERBOS_CHECKOUT_DIR:-/tmp/cerbos-policies}
+    updatePollInterval: ${CERBOS_UPDATE_POLL_INTERVAL:-60s}
+    operationTimeout: ${CERBOS_OPERATION_TIMEOUT:-30s}
+    https:
+      username: ${CERBOS_GIT_USER:-x-access-token}
+      password: ${GITHUB_TOKEN}
+
+engine:
+  defaultPolicyVersion: ${CERBOS_POLICY_VERSION:-v1}
+
+  policyDir: ${CERBOS_POLICY_DIR:-/tmp/cerbos-policies}
+  validation: ${CERBOS_VALIDATION:-strict}
+
+logLevel: ${CERBOS_LOG_LEVEL:-debug}
