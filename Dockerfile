@@ -22,19 +22,18 @@ RUN mkdir -p /tmp/cerbos \
   && wget -qO- \
   "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_RELEASE}/cerbos_${CERBOS_RELEASE}_Linux_${ARCH}.tar.gz" \
   | tar xz -C /tmp/cerbos \
-  && chmod +x /tmp/cerbos/*/cerbos
+  && chmod +x /tmp/cerbos/cerbos
 
 ###############################################################################
 # 2) Runtime stage: distroless with both binaries
 ###############################################################################
 FROM gcr.io/distroless/base
-ARG ARCH=x86_64
 
 # 1) Gateway
 COPY --from=builder /gw /gw
 
-# 2) Cerbos server: copy the binary directly (permissions preserved)
-COPY --from=builder /tmp/cerbos/*/cerbos /cerbos
+# 2) Cerbos server
+COPY --from=builder /tmp/cerbos/cerbos /cerbos
 
 # 3) Default config
 COPY conf.default.yml /conf.yml
